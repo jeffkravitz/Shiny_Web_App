@@ -1,8 +1,18 @@
-references <- data.frame(read.delim("crumpbib.bib", sep = "@"))
-references$X <- as.character((references$X))
-num_citations <- length(unique(levels(references$X.1))[-1])
+references <- data.frame(read.delim("crumpbib_2.bib", sep = "@"))
+references$X <- as.character(references$X)
+references$X.1 <- as.character(references$X.1)
 
-article_id <- as.character(unique(levels(references$X.1))[-1])
+j <- 1
+article_id <- c()
+for (i in 1:length(references$X.1)) {
+  if (references$X.1[i] != "") {
+    article_id[j] <- references$X.1[i]
+    j <- j + 1
+  }
+}
+num_citations <- length(article_id)
+
+#article_id <- as.character(unique(levels(references$X.1))[-1])
 references$X.1 <- as.character((references$X.1))
 for(i in 1:length(article_id)) {
   article_id[i] <- substr(article_id[i], start = 9, stop = nchar(article_id[i])-1)
@@ -30,20 +40,26 @@ for (i in 1:num_citations) {
       loop_count <- 0
       break
     }
-    if (substr(loop_references$X[j],start=3,stop=7) == "title") {
-      citations$title[i] <- substr(loop_references$X[j], start=12, stop=nchar(loop_references$X[j])-2)
+    if (substr(loop_references$X[j],start=2,stop=6) == "title") {
+      citations$title[i] <- substr(loop_references$X[j], start=11, stop=nchar(loop_references$X[j])-2)
     }
-    if (substr(loop_references$X[j],start=3,stop=8) == "author") {
-      citations$author[i] <- substr(loop_references$X[j], start=13, stop=nchar(loop_references$X[j])-2)
+    if (substr(loop_references$X[j],start=2,stop=7) == "author") {
+      citations$author[i] <- substr(loop_references$X[j], start=12, stop=nchar(loop_references$X[j])-2)
     }
-    if (substr(loop_references$X[j],start=3,stop=9) == "journal") {
-      citations$journal[i] <- substr(loop_references$X[j], start=14, stop=nchar(loop_references$X[j])-2)
+    if (substr(loop_references$X[j],start=2,stop=8) == "journal") {
+      citations$journal[i] <- substr(loop_references$X[j], start=13, stop=nchar(loop_references$X[j])-2)
     }
-    if (substr(loop_references$X[j],start=3,stop=7) == "pages") {
-      citations$pages[i] <- substr(loop_references$X[j], start=12, stop=nchar(loop_references$X[j])-2)
+    if (substr(loop_references$X[j],start=2,stop=13) == "journaltitle") {
+      citations$journal[i] <- substr(loop_references$X[j], start=18, stop=nchar(loop_references$X[j])-2)
     }
-    if (substr(loop_references$X[j],start=3,stop=6) == "year") {
-      citations$year[i] <- substr(loop_references$X[j], start=11, stop=nchar(loop_references$X[j])-2)
+    if (substr(loop_references$X[j],start=2,stop=6) == "pages") {
+      citations$pages[i] <- substr(loop_references$X[j], start=11, stop=nchar(loop_references$X[j])-2)
+    }
+    if (substr(loop_references$X[j],start=2,stop=5) == "year") {
+      citations$year[i] <- substr(loop_references$X[j], start=10, stop=nchar(loop_references$X[j])-2)
+    }
+    if (substr(loop_references$X[j],start=2,stop=5) == "date") {
+      citations$year[i] <- substr(loop_references$X[j], start=10, stop=13)
     }
     loop_count <- loop_count + 1
     print(loop_count)
@@ -82,26 +98,23 @@ for (i in comma_words) {
   title_word_list[i] <- substr(title_word_list[i], start=1, stop=nchar(title_word_list[i])-1)
 }
 prepositions <- which(title_word_list %in% c("to","a","of","in","i","for","and","its","the","is"))
-title_word_list_b <- title_word_list[-prepositions]
+title_word_list_c <- title_word_list[-prepositions]
 
 
 # Citations by year
-year_of_citations_b <- as.numeric(citations$year)
+year_of_citations_c <- as.numeric(citations$year)
 
 # Citations by journal
-journal_of_citations_b <- citations$journal
+journal_of_citations_c <- citations$journal
 
 
-year_of_citations <- list(year_of_citations_a, year_of_citations_b)
+year_of_citations <- list(unlist(year_of_citations_a), unlist(year_of_citations_b), unlist(year_of_citations_c))
 
 # Word cloud
 library(wordcloud2)
-word_cloud_b <- wordcloud2(data.frame(table(title_word_list_b)), color = "limegreen")
+word_cloud_c <- wordcloud2(data.frame(table(title_word_list_c)), color = "limegreen")
 
 # Citations by author
-author_list_b <- author_list
+author_list_c <- author_list
+author_list <- list(unlist(author_list_a), unlist(author_list_b), unlist(author_list_c))
 
-
-
-
-  

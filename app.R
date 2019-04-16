@@ -14,6 +14,7 @@
 library(shiny)
 library(markdown)
 library(wordcloud2)
+library(ggplot2)
 
 # Define UI for application that draws a histogram
 ui <- navbarPage("Citation Statistics",
@@ -28,7 +29,8 @@ tabPanel("Year",
    # Bibliography selection
    selectInput("bib", label = h3("Select Bibliography"), 
                choices = list("Jeff's Moral Psychology Proposal" = 1,
-                              "Example bib from CrumpLab" = 2)),
+                              "Example bib from CrumpLab" = 2,
+                              "Crump's Entropy Typing" = 3)),
   hr(),
    
    # Sidebar with a slider input for number of bins 
@@ -64,7 +66,8 @@ tabPanel("Title",
    # Bibliography selection
    selectInput("bib2", label = h3("Select Bibliography"), 
                choices = list("Jeff's Moral Psychology Proposal" = 1,
-                              "Example bib from CrumpLab" = 2)),
+                              "Example bib from CrumpLab" = 2,
+                              "Crump's Entropy Typing" = 3)),
    hr(),
    
    mainPanel(
@@ -82,7 +85,8 @@ tabPanel("Author",
   # Bibliography selection
   selectInput("bib3", label = h3("Select Bibliography"), 
   choices = list("Jeff's Moral Psychology Proposal" = 1,
-                 "Example bib from CrumpLab" = 2)),
+                 "Example bib from CrumpLab" = 2,
+                 "Crump's Entropy Typing" = 3)),
   hr(),
   
   mainPanel(
@@ -115,7 +119,7 @@ server <- function(input, output) {
    })
    
    output$word_cloud <- renderWordcloud2({
-     word_cloud <- list(word_cloud_a, word_cloud_b)
+     word_cloud <- list(word_cloud_a, word_cloud_b, word_cloud_c)
      word_cloud[[as.numeric(input$bib2)]]
    })
    

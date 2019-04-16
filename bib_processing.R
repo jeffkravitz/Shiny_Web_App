@@ -98,10 +98,3 @@ word_cloud_a <- wordcloud2(data.frame(table(title_word_list_a)), color = "limegr
 
 # Citations by author
 author_list_a <- author_list
-
-library(ggplot2)
-#author_plot_a <- ggplot(data=author_list_a, aes(x=Var1, y= Freq))+
-#  geom_bar(stat = "identity", fill = "limegreen")+
-#  labs(x = " ", title = "Frequency of Citations by Author")+
-#  coord_flip()+
-#  theme_classic(base_size = 12)

@@ -97,3 +97,17 @@ year_of_citations <- list(year_of_citations_a, year_of_citations_b)
 # Word cloud
 library(wordcloud2)
 word_cloud_b <- wordcloud2(data.frame(table(title_word_list_b)), color = "limegreen")
+
+# Citations by author
+author_list_b <- author_list
+author_list <- list(unlist(author_list_a), unlist(author_list_b))
+
+
+library(ggplot2)
+#author_plot_b <- ggplot(data=author_list_b, aes(x=Var1, y= Freq))+
+#  geom_bar(stat = "identity", fill = "limegreen")+
+#  labs(x = " ", title = "Frequency of Citations by Author")+
+#  coord_flip()+
+#  theme_classic(base_size = 12)
+
+  

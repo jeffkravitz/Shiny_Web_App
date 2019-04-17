@@ -107,14 +107,11 @@ year_of_citations_c <- as.numeric(citations$year)
 # Citations by journal
 journal_of_citations_c <- citations$journal
 
-
-year_of_citations <- list(unlist(year_of_citations_a), unlist(year_of_citations_b), unlist(year_of_citations_c))
-
 # Word cloud
 library(wordcloud2)
 word_cloud_c <- wordcloud2(data.frame(table(title_word_list_c)), color = "limegreen")
 
 # Citations by author
 author_list_c <- author_list
-author_list <- list(unlist(author_list_a), unlist(author_list_b), unlist(author_list_c))
+
 

@@ -1,12 +1,16 @@
 references <- data.frame(read.delim("crumpbib.bib", sep = "@"))
-references$X <- as.character((references$X))
-num_citations <- length(unique(levels(references$X.1))[-1])
+references$X <- as.character(references$X)
+references$X.1 <- as.character(references$X.1)
 
-article_id <- as.character(unique(levels(references$X.1))[-1])
-references$X.1 <- as.character((references$X.1))
-for(i in 1:length(article_id)) {
-  article_id[i] <- substr(article_id[i], start = 9, stop = nchar(article_id[i])-1)
+j <- 1
+article_id <- c()
+for (i in 1:length(references$X.1)) {
+  if (references$X.1[i] != "") {
+    article_id[j] <- references$X.1[i]
+    j <- j + 1
+  }
 }
+num_citations <- length(article_id)
 
 # Generate NA values for fields that may not have relevant information
 citations <- data.frame(article_id = article_id,

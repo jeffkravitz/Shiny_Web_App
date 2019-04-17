@@ -1,10 +1,5 @@
 # Average impact factor of citations
 # Citations by journal
-# Citations by year
-# Citations by page length
-# Citations by author
-# Citations by most used title word
-
 
 library(shiny)
 library(markdown)
@@ -28,8 +23,8 @@ ui <- fluidPage(
   # Tab for citation year statistics
   tabPanel("Year",
     h2("Citation Statistics"),
-    p("Not all publications are created equal. Older publications are often foundational but outdated. Articles published in journals with higher impact factors are more influential. Bibliographies that more heavily cite a small subset of authors may reflect bias."),
-    div("This Shiny Application analyzes and graphically displays citation statistics from bibtex files."),
+    p("Not all publications are created equal. Older publications are often foundational but outdated, and articles published in journals with higher impact factors are more influential. Bibliographies that more heavily cite a small subset of authors may reflect bias."),
+    div("This Shiny Application, created by Jeff Kravitz, graphically displays citation statistics by analyzing bibtex files."),
     p(tags$i("Note: in order for this application to function properly, bibtex files must begin with a single @")),
     hr(),
   
@@ -109,6 +104,25 @@ ui <- fluidPage(
   mainPanel(
     plotOutput("author_plot")
   )
+  ),
+  
+  tabPanel("Journal",
+    h2("Citation Statistics"),
+    p("Not all publications are created equal. Older publications are often foundational but outdated. Articles published in journals with higher impact factors are more influential. Bibliographies that more heavily cite a small subset of authors may reflect bias."),
+    div("This Shiny Application analyzes and graphically displays citation statistics from bibtex files."),
+    p(tags$i("Note: in order for this application to function properly, bibtex files must begin with a single @")),
+    hr(),
+    
+    # Bibliography selection
+    selectInput("bib4", label = h3("Select Bibliography"), 
+                choices = list("Jeff's Moral Psychology Proposal" = 1,
+                               "Example bib from CrumpLab" = 2,
+                               "Crump's Entropy Typing" = 3)),
+    hr(),
+    
+    mainPanel(
+      plotOutput("journal_plot")
+    )
   )
 
 ))
@@ -161,6 +175,16 @@ server <- function(input, output) {
      ggplot(data=data.frame(table(unlist(author_list[[as.numeric(input$bib3)]]))), aes(x=Var1, y= Freq))+
        geom_bar(stat = "identity", fill = "limegreen")+
        labs(x = " ", title = "Frequency of Citations by Author")+
+       coord_flip()+
+       theme_classic(base_size = 12)
+   })
+   
+   # Produce barchart of citation journals
+   output$journal_plot <- renderPlot({
+     journal_list <- list(unlist(journal_list_a), unlist(journal_list_b), unlist(journal_list_c))
+     ggplot(data=data.frame(table(unlist(journal_list[[as.numeric(input$bib4)]]))), aes(x=Var1, y= Freq))+
+       geom_bar(stat = "identity", fill = "limegreen")+
+       labs(x = " ", title = "Frequency of Citations by Journal")+
        coord_flip()+
        theme_classic(base_size = 12)
    })

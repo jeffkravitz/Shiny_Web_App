@@ -89,6 +89,10 @@ unlist_of_authors <- unlist(author_list)
 
 # Citations by title word
 title_word_list <- tolower(unlist(strsplit(citations$title, split = " ")))
+title_word_list <- gsub("[{]", "", title_word_list)
+title_word_list <- gsub("[}]", "", title_word_list)
+title_word_list <- gsub("[(]", "", title_word_list)
+title_word_list <- gsub("[)]", "", title_word_list)
 comma_words <- grep(",",title_word_list, fixed = TRUE)
 comma_words <- c(comma_words, grep(":",title_word_list, fixed = TRUE))
 comma_words <- c(comma_words, grep(".",title_word_list, fixed = TRUE))
@@ -97,7 +101,7 @@ comma_words <- unique(comma_words)
 for (i in comma_words) {
   title_word_list[i] <- substr(title_word_list[i], start=1, stop=nchar(title_word_list[i])-1)
 }
-prepositions <- which(title_word_list %in% c("to","a","of","in","i","for","and","its","the","is"))
+prepositions <- which(title_word_list %in% c("to","a","of","in","i","for","and","its","the","is","as","an","it","or"))
 title_word_list_c <- title_word_list[-prepositions]
 
 
@@ -114,4 +118,5 @@ word_cloud_c <- wordcloud2(data.frame(table(title_word_list_c)), color = "limegr
 # Citations by author
 author_list_c <- author_list
 
-
+# Citations by journal
+journal_list_c <- citations$journal

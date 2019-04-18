@@ -5,6 +5,7 @@ library(shiny)
 library(markdown)
 library(wordcloud2)
 library(ggplot2)
+library(stringr)
 
 # Define User Interface
 ui <- fluidPage( 
@@ -26,7 +27,6 @@ ui <- fluidPage(
     p("Not all publications are created equal. Older publications are often foundational but outdated, and articles published in journals with higher impact factors are more influential. Bibliographies that more heavily cite a small subset of authors may reflect bias."),
     div("This Shiny Application, created by Jeff Kravitz, graphically displays citation statistics by analyzing bibtex files."),
     p(tags$i("Note: in order for this application to function properly, bibtex files must begin with a single @")),
-    hr(),
   
    # Bibliography selection
    selectInput("bib", label = h3("Select Bibliography"), 
@@ -70,7 +70,6 @@ ui <- fluidPage(
     p("Not all publications are created equal. Older publications are often foundational but outdated. Articles published in journals with higher impact factors are more influential. Bibliographies that more heavily cite a small subset of authors may reflect bias."),
     div("This Shiny Application analyzes and graphically displays citation statistics from bibtex files."),
     p(tags$i("Note: in order for this application to function properly, bibtex files must begin with a single @")),
-    hr(),
    
    # Bibliography selection
    selectInput("bib2", label = h3("Select Bibliography"), 
@@ -91,7 +90,6 @@ ui <- fluidPage(
     p("Not all publications are created equal. Older publications are often foundational but outdated. Articles published in journals with higher impact factors are more influential. Bibliographies that more heavily cite a small subset of authors may reflect bias."),
     div("This Shiny Application analyzes and graphically displays citation statistics from bibtex files."),
     p(tags$i("Note: in order for this application to function properly, bibtex files must begin with a single @")),
-    hr(),
          
   # Bibliography selection
   selectInput("bib3", label = h3("Select Bibliography"), 
@@ -100,18 +98,29 @@ ui <- fluidPage(
                  "Crump's Entropy Typing" = 3)),
   hr(),
   
-  # Print bar chart of citation authors
-  mainPanel(
-    plotOutput("author_plot")
+  sidebarLayout(
+    sidebarPanel(
+      sliderInput(inputId = "num_authors",
+                  label = "Include authors with minimum number of citations:",
+                  min = 1,
+                  max = 50,
+                  value = 1)
+    ),
+    # Print bar chart of citation authors
+    mainPanel(
+      plotOutput("author_plot")
+    )
   )
   ),
+  
+
   
   tabPanel("Journal",
     h2("Citation Statistics"),
     p("Not all publications are created equal. Older publications are often foundational but outdated. Articles published in journals with higher impact factors are more influential. Bibliographies that more heavily cite a small subset of authors may reflect bias."),
     div("This Shiny Application analyzes and graphically displays citation statistics from bibtex files."),
     p(tags$i("Note: in order for this application to function properly, bibtex files must begin with a single @")),
-    hr(),
+
     
     # Bibliography selection
     selectInput("bib4", label = h3("Select Bibliography"), 
@@ -120,9 +129,20 @@ ui <- fluidPage(
                                "Crump's Entropy Typing" = 3)),
     hr(),
     
-    mainPanel(
-      plotOutput("journal_plot")
+
+    
+    navlistPanel(
+      "Select Graph Type",
+      tabPanel("Bar Graph",
+               plotOutput("journal_plot")
+      ),
+      tabPanel("Pie Chart",
+               plotOutput("journal_pie_chart")
+      )
     )
+    
+    
+    
   )
 
 ))
@@ -172,7 +192,9 @@ server <- function(input, output) {
    # Produce barchart of citation authors
    output$author_plot <- renderPlot({
      author_list <- list(unlist(author_list_a), unlist(author_list_b), unlist(author_list_c))
-     ggplot(data=data.frame(table(unlist(author_list[[as.numeric(input$bib3)]]))), aes(x=Var1, y= Freq))+
+     author <- data.frame(table(unlist(author_list[[as.numeric(input$bib3)]])))
+     author <- author[author$Freq > input$num_authors-1,]
+     ggplot(data=author, aes(x=Var1, y= Freq))+
        geom_bar(stat = "identity", fill = "limegreen")+
        labs(x = " ", title = "Frequency of Citations by Author")+
        coord_flip()+
@@ -183,12 +205,40 @@ server <- function(input, output) {
    output$journal_plot <- renderPlot({
      journal_list <- list(unlist(journal_list_a), unlist(journal_list_b), unlist(journal_list_c))
      ggplot(data=data.frame(table(unlist(journal_list[[as.numeric(input$bib4)]]))), aes(x=Var1, y= Freq))+
-       geom_bar(stat = "identity", fill = "limegreen")+
+       geom_bar(stat = "identity",position = position_dodge(width=1), fill = "limegreen")+
        labs(x = " ", title = "Frequency of Citations by Journal")+
        coord_flip()+
        theme_classic(base_size = 12)
    })
    
+   # Produce pie chart of citation journals
+   output$journal_pie_chart <- renderPlot({
+     journal_list <- list(unlist(journal_list_a), unlist(journal_list_b), unlist(journal_list_c))
+     df_journal_a <- data.frame(table(unlist(journal_list_a)))
+     percent_a = rep(0,length(unique(journal_list_a)))
+     percent_b = rep(0,length(unique(journal_list_c)))
+     percent_c = rep(0,length(unique(journal_list_c)))
+     percent_list <- list(percent_a,percent_b,percent_c)
+     for (i in 1:3) {
+       for (j in 1:length(journal_list[[i]])) {
+         percent_list[[i]][j] <- data.frame(table(unlist(journal_list_a)))[j,2]/sum(data.frame(table(unlist(journal_list_a)))[,2])
+       }
+     }
+     ggplot(data = data.frame(journal = journal_list[[as.numeric(input$bib4)]], percent = percent_list[[as.numeric(input$bib4)]]), aes(x="", y=percent, fill=str_wrap(journal_list[[as.numeric(input$bib4)]],25)))+
+       geom_bar(width = 1, stat = "identity")+
+       coord_polar("y", start=0)+
+       labs(x="", y="")+
+       theme(axis.text = element_blank(),
+             axis.ticks = element_blank(),
+             panel.grid  = element_blank(),
+             legend.title = element_blank(),
+             panel.grid.minor = element_blank(), 
+             panel.grid.major = element_blank(),
+             panel.background = element_blank(),
+             plot.background = element_blank()
+      )
+   })
+
 }
 
 # Run the application 

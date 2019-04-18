@@ -67,8 +67,8 @@ ui <- fluidPage(
   # Tab for citation title statistics
   tabPanel("Title",
     h2("Citation Statistics"),
-    p("Not all publications are created equal. Older publications are often foundational but outdated. Articles published in journals with higher impact factors are more influential. Bibliographies that more heavily cite a small subset of authors may reflect bias."),
-    div("This Shiny Application analyzes and graphically displays citation statistics from bibtex files."),
+    p("Not all publications are created equal. Older publications are often foundational but outdated, and articles published in journals with higher impact factors are more influential. Bibliographies that more heavily cite a small subset of authors may reflect bias."),
+    div("This Shiny Application, created by Jeff Kravitz, graphically displays citation statistics by analyzing bibtex files."),
     p(tags$i("Note: in order for this application to function properly, bibtex files must begin with a single @")),
    
    # Bibliography selection
@@ -87,8 +87,8 @@ ui <- fluidPage(
   # Tab for citation author statistics
   tabPanel("Author",
     h2("Citation Statistics"),
-    p("Not all publications are created equal. Older publications are often foundational but outdated. Articles published in journals with higher impact factors are more influential. Bibliographies that more heavily cite a small subset of authors may reflect bias."),
-    div("This Shiny Application analyzes and graphically displays citation statistics from bibtex files."),
+    p("Not all publications are created equal. Older publications are often foundational but outdated, and articles published in journals with higher impact factors are more influential. Bibliographies that more heavily cite a small subset of authors may reflect bias."),
+    div("This Shiny Application, created by Jeff Kravitz, graphically displays citation statistics by analyzing bibtex files."),
     p(tags$i("Note: in order for this application to function properly, bibtex files must begin with a single @")),
          
   # Bibliography selection
@@ -117,8 +117,8 @@ ui <- fluidPage(
   
   tabPanel("Journal",
     h2("Citation Statistics"),
-    p("Not all publications are created equal. Older publications are often foundational but outdated. Articles published in journals with higher impact factors are more influential. Bibliographies that more heavily cite a small subset of authors may reflect bias."),
-    div("This Shiny Application analyzes and graphically displays citation statistics from bibtex files."),
+    p("Not all publications are created equal. Older publications are often foundational but outdated, and articles published in journals with higher impact factors are more influential. Bibliographies that more heavily cite a small subset of authors may reflect bias."),
+    div("This Shiny Application, created by Jeff Kravitz, graphically displays citation statistics by analyzing bibtex files."),
     p(tags$i("Note: in order for this application to function properly, bibtex files must begin with a single @")),
 
     

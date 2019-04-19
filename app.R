@@ -78,10 +78,21 @@ ui <- fluidPage(
                               "Crump's Entropy Typing" = 3)),
    hr(),
    
+   
+   sidebarLayout(
+     sidebarPanel(
+       sliderInput(inputId = "num_words",
+                   label = "Include title words used in a minimum number of citations:",
+                   min = 1,
+                   max = 20,
+                   value = 1)
+     ),
+   
    # Print wordcloud of citation title words
    mainPanel(
      wordcloud2Output("word_cloud")
    )
+  )
   ),
 
   # Tab for citation author statistics
@@ -106,6 +117,7 @@ ui <- fluidPage(
                   max = 50,
                   value = 1)
     ),
+    
     # Print bar chart of citation authors
     mainPanel(
       plotOutput("author_plot")
@@ -185,6 +197,12 @@ server <- function(input, output) {
    
    # Produce wordcloud of citation title words
    output$word_cloud <- renderWordcloud2({
+     word_cloud_df_a <- data.frame(table(title_word_list_a))
+     word_cloud_a <- wordcloud2((word_cloud_df_a)[word_cloud_df_a$Freq > input$num_words-1,], color = "limegreen")
+     word_cloud_df_b <- data.frame(table(title_word_list_b))
+     word_cloud_b <- wordcloud2((word_cloud_df_b)[word_cloud_df_b$Freq > input$num_words-1,], color = "limegreen")
+     word_cloud_df_c <- data.frame(table(title_word_list_c))
+     word_cloud_c <- wordcloud2((word_cloud_df_c)[word_cloud_df_c$Freq > input$num_words-1,], color = "limegreen")
      word_cloud <- list(word_cloud_a, word_cloud_b, word_cloud_c)
      word_cloud[[as.numeric(input$bib2)]]
    })
